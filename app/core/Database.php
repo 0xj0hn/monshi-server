@@ -1,7 +1,7 @@
 <?php 
 
 
-class DB {
+class Database {
     protected $mysql;
     public $dbinformation;
     private $encryptionMethod = "...";
