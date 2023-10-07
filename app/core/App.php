@@ -1,8 +1,8 @@
 <?php
 
-class App{
-    protected $controller = "home";
-    protected $method = "index";
+class App {
+    protected $controller = "auth";
+    protected $method = "login";
     protected $params = [];
 
     public function __construct(){
@@ -24,7 +24,7 @@ class App{
             $this->method = $url[1];
             unset($url[1]);
             if (method_exists($this->controller, $this->method)){
-                $this->controller = new $this->controller . "controller";
+                $this->controller = new $this->controller;
                 $this->params = $url ? array_values($url) : []; //rebase indexes.
                 call_user_func_array([$this->controller, $this->method], $this->params);
             }
