@@ -4,19 +4,69 @@
 class Database {
     protected $mysql;
     public $dbinformation;
-    private $encryptionMethod = "...";
+    private $encryptionMethod = "AES-256-CBC";
     private $encryptionKey = "..."; //32 bytes
     private $encryptionIV = "..."; //16 bytes
     public function __construct(){
-        $host = "...";
-        $username = "...";
-        $password = "...";
-        $dbname = "...";
+        $host = "localhost";
+        $username = "root";
+        $password = "Mhdmhdmhd82@#";
+        $dbname = "db_monshi";
         $this->mysql = new mysqli($host, $username, $password, $dbname);
         $this->mysql->query("set names utf8");
         if ($this->mysql->connect_error){
             die("ERROR: " . $this->mysql->connect_error);
         }
+    }
+
+    public function generateTables() {
+        $isSuccessful = (
+            $this->createSecretariesTable() &&
+            $this->createManagersTable() &&
+            $this->createEventsTable()
+        );
+        return $isSuccessful;
+    }
+
+    public function createSecretariesTable() {
+        $sql = "CREATE TABLE IF NOT EXISTS `secretaries` (
+            id int AUTO_INCREMENT PRIMARY KEY,
+            username varchar(50),
+            password varchar(50),
+            name varchar(50),
+            family varchar(50),
+            phone_number varchar(11),
+            firebase_token text,
+            manager_id int
+        )";
+        return $this->mysql->query($sql);
+    }
+
+    public function createManagersTable() {
+        $sql = "CREATE TABLE IF NOT EXISTS `managers` (
+            id int AUTO_INCREMENT PRIMARY KEY,
+            username varchar(50),
+            password varchar(50),
+            name varchar(50),
+            family varchar(50),
+            phone_number varchar(11),
+            firebase_token text
+        )";
+        return $this->mysql->query($sql);
+    }
+
+    public function createEventsTable() {
+        $sql = "CREATE TABLE IF NOT EXISTS `events` (
+            id int AUTO_INCREMENT PRIMARY KEY,
+            title varchar(50),
+            body varchar(255),
+            created_at varchar(50),
+            started_at varchar(50),
+            completed_at varchar(50),
+            notif_at varchar(50),
+            manager_id int
+        )";
+        return $this->mysql->query($sql);
     }
 
     /*

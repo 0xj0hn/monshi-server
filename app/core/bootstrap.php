@@ -1,2 +1,2 @@
 <?php
-define("DOMAIN", "http://localhost/mojtama-server-mvc");
+define("DOMAIN", "http://localhost/monshi-mvc");
