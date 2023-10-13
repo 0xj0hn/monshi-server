@@ -21,10 +21,10 @@ class Auth extends Controller {
 
 
     public function manager_signup() {
-        $model = $this->model("auth");
         $result = [];
         $isSignedUp = $model->secretarySignup($_POST);
         if ($isSignedUp) {
+            $model = $this->model("auth");
             $result = [
                 "status" => "success",
                 "message" => "signup was successful"
@@ -40,13 +40,13 @@ class Auth extends Controller {
     }
 
     public function secretary_login() {
-        $model = $this->model("auth");
         $result = [];
         $isValidated = Validator::validateElements($_POST, [
             "username",
             "password"
         ]);
         if ($isValidated) {
+            $model = $this->model("auth");
             $username = $_POST["username"];
             $password = $_POST["password"];
             $isLogined = $model->secretaryLogin($username, $password);
@@ -71,13 +71,13 @@ class Auth extends Controller {
     }
 
     public function manager_login() {
-        $model = $this->model("auth");
         $result = [];
         $isValidated = Validator::validateElements($_GET, [
             "username",
             "password"
         ]);
         if ($isValidated) {
+            $model = $this->model("auth");
             $username = $_GET["username"];
             $password = $_GET["password"];
             $isLogined = $model->managerLogin($username, $password);
