@@ -42,13 +42,13 @@ class Auth extends Controller {
     public function secretary_login() {
         $model = $this->model("auth");
         $result = [];
-        $isValidated = Validator::validateElements($_GET, [
+        $isValidated = Validator::validateElements($_POST, [
             "username",
             "password"
         ]);
         if ($isValidated) {
-            $username = $_GET["username"];
-            $password = $_GET["password"];
+            $username = $_POST["username"];
+            $password = $_POST["password"];
             $isLogined = $model->secretaryLogin($username, $password);
             if ($isLogined) {
                 $result = [

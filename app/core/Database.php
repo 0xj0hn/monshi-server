@@ -17,6 +17,7 @@ class Database {
         if ($this->mysql->connect_error){
             die("ERROR: " . $this->mysql->connect_error);
         }
+        $this->generateTables();
     }
 
     public function generateTables() {
