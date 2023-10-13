@@ -11,7 +11,7 @@ class Auth extends Controller {
             ];
         }else{
             $result = [
-                "code" => "401",
+                "code" => 401,
                 "status" => "error",
                 "message" => "a problem has occured"
             ];
