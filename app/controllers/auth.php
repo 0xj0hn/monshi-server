@@ -27,6 +27,8 @@ class Auth extends Controller {
             if ($isLogined) {
                 $result = [
                     "status" => "success",
+                    "access_token" => $model->generateJWTToken($username, 60 * 60),
+                    "refresh_token" => $model->generateJWTToken($username) //I should implement the refresh token later.
                 ];
             }else{
                 $result = [
@@ -58,6 +60,8 @@ class Auth extends Controller {
             if ($isLogined) {
                 $result = [
                     "status" => "success",
+                    "access_token" => $model->generateJWTToken($username, 60 * 60),
+                    "refresh_token" => $model->generateJWTToken($username)
                 ];
             }else{
                 $result = [
