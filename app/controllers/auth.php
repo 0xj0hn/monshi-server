@@ -22,9 +22,9 @@ class Auth extends Controller {
 
     public function manager_signup() {
         $result = [];
+        $model = $this->model("auth");
         $isSignedUp = $model->secretarySignup($_POST);
         if ($isSignedUp) {
-            $model = $this->model("auth");
             $result = [
                 "status" => "success",
                 "message" => "signup was successful"
