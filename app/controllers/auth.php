@@ -78,8 +78,8 @@ class Auth extends Controller {
         ]);
         if ($isValidated) {
             $model = $this->model("auth");
-            $username = $_GET["username"];
-            $password = $_GET["password"];
+            $username = $_POST["username"];
+            $password = $_POST["password"];
             $isLogined = $model->managerLogin($username, $password);
             if ($isLogined) {
                 $result = [
