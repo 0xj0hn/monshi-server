@@ -50,6 +50,7 @@ class AuthModel extends Model {
     }
 
     public function secretarySignup($data) {
+        $result = [];
         $isValidated = Validator::validateElements($data, [
             "username",
             "password",
@@ -65,12 +66,26 @@ class AuthModel extends Model {
             $phoneNumber = $data["phone_number"];
             $sql = "INSERT INTO secretaries(username, password, name, family, phone_number) VALUES(?, ?, ?, ?, ?)";
             $query = $this->query($sql, "sssss", $username, $password, $name, $family, $phoneNumber);
-            return $query;
+            if ($query) {
+                $result = [
+                    "status" => "success",
+                    "message" => "signup was successful",
+                    "access_token" => $this->generateJWTToken($username, 60 * 60), //Add 60 * 60 = 3600 seconds time limit for token
+                    "refresh_token" => $this->generateJWTToken($username),
+                ];
+            }else{
+                $result = [
+                    "code" => 401,
+                    "status" => "error",
+                    "message" => "a problem has occured"
+                ];
+            }
         }
-        return false;
+        return $result;
     }
 
     public function managerSignup($data) {
+        $result = [];
         $isValidated = Validator::validateElements($data, [
             "username",
             "password",
@@ -86,8 +101,21 @@ class AuthModel extends Model {
             $phoneNumber = $data["phone_number"];
             $sql = "INSERT INTO managers(username, password, name, family, phone_number) VALUES(?, ?, ?, ?, ?)";
             $query = $this->query($sql, "sssss", $username, $password, $name, $family, $phoneNumber);
-            return $query;
+            if ($query) {
+                $result = [
+                    "status" => "success",
+                    "message" => "signup was successful",
+                    "access_token" => $this->generateJWTToken($username, 60 * 60), //Add 60 * 60 = 3600 seconds time limit for token
+                    "refresh_token" => $this->generateJWTToken($username),
+                ];
+            }else{
+                $result = [
+                    "code" => 401,
+                    "status" => "error",
+                    "message" => "a problem has occured"
+                ];
+            }
         }
-        return false;
+        return $result;
     }
 }

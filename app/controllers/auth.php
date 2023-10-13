@@ -2,40 +2,14 @@
 class Auth extends Controller {
     public function secretary_signup() {
         $model = $this->model("auth");
-        $result = [];
-        $isSignedUp = $model->secretarySignup($_POST);
-        if ($isSignedUp) {
-            $result = [
-                "status" => "success",
-                "message" => "signup was successful"
-            ];
-        }else{
-            $result = [
-                "code" => 401,
-                "status" => "error",
-                "message" => "a problem has occured"
-            ];
-        }
+        $result = $model->secretarySignup($_POST);
         $this->view("json", $result);
     }
 
 
     public function manager_signup() {
-        $result = [];
         $model = $this->model("auth");
-        $isSignedUp = $model->secretarySignup($_POST);
-        if ($isSignedUp) {
-            $result = [
-                "status" => "success",
-                "message" => "signup was successful"
-            ];
-        }else{
-            $result = [
-                "code" => "401",
-                "status" => "error",
-                "message" => "a problem has occured"
-            ];
-        }
+        $result = $model->managerSignup($_POST);
         $this->view("json", $result);
     }
 
