@@ -27,6 +27,16 @@ class AuthModel extends Model {
         return $jwt;
     }
 
+    public function checkJWTToken($jwtToken) {
+        $jwtSeparated = explode(".", $jwtToken);
+        $encodedHeader = $jwtSeparated[0];
+        $encodedPayload = $jwtSeparated[1];
+        $encodedSignature = $jwtSeparated[2];
+        $givenTokenSignature = json_decode($encodedSignature, true);
+        $theExactSignature = hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, $this->secretKey);
+        return $givenTokenSignature == $theExactSignature;
+    }
+
     private function base64UrlEncode($value) {
         $base64Encoded = base64_encode($value);
         $base64UrlEncoded = strtr($base64Encoded, '+/', '-_');
