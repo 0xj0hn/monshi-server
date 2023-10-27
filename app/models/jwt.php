@@ -4,7 +4,7 @@ class JwtModel extends Model {
     public function getJWTToken() {
         $headers = getallheaders();
         if (array_key_exists("Authorization", $headers)) {
-            $bearerSeparator = explode(": ", $headers["Authorization"]);
+            $bearerSeparator = explode("Bearer ", $headers["Authorization"]);
             $jwtToken = $bearerSeparator[1];
             return $jwtToken;
         }
