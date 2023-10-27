@@ -58,10 +58,11 @@ class Auth extends Controller {
             $password = $_POST["password"];
             $isLogined = $model->managerLogin($username, $password);
             if ($isLogined) {
+                $jwtModel = $this->model("jwt");
                 $result = [
                     "status" => "success",
-                    "access_token" => $model->generateJWTToken($username, 60 * 60),
-                    "refresh_token" => $model->generateJWTToken($username)
+                    "access_token" => $jwtModel->generateJWTToken($username, 60 * 60),
+                    "refresh_token" => $jwtModel->generateJWTToken($username)
                 ];
             }else{
                 $result = [
@@ -74,6 +75,35 @@ class Auth extends Controller {
                 "code" => 400,
                 "status" => "error",
                 "message" => "you haven't provided needed params"
+            ];
+        }
+        $this->view("json", $result);
+    }
+
+    public function refresh_token() {
+        $result = [];
+        $model = $this->model("jwt");
+        $jwtToken = $model->getJWTToken();
+        if ($jwtToken) {
+            $model = $this->model("auth");
+            $checkedToken = $model->checkJWTToken($jwtToken);
+            if ($checkedToken) {
+                $username = $checkedToken;
+                $result = [
+                    "status" => "success",
+                    "access_token" => $model->generateJWTToken($username, 60 * 60),
+                    "refresh_token" => $model->generateJWTToken($username)
+                ];
+            }else{
+                $result = [
+                    "status" => "error",
+                    "message" => "your jwt signature isn't correct"
+                ];
+            }
+        }else{
+            $result = [
+                "status" => "error",
+                "jwt" => "you didn't provide jwt token"
             ];
         }
         $this->view("json", $result);
