@@ -1,11 +1,12 @@
 <?php
 class Event extends Model {
     public function addEvent() {
-
     }
 
-    public function removeEvent() {
-
+    public function removeEvent($id) {
+        $sql = "DELETE FROM events WHERE id = ?";
+        $query = $this->query($sql, "i", $id);
+        return $query ? true : false;
     }
 
     public function getEvents($managerId, $secretaryId) {
