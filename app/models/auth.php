@@ -1,49 +1,5 @@
 <?php
 class AuthModel extends Model {
-    private $secretKey = "MoNSHISeCrEt@^%!&^$";
-    public function setSecretKey($newSecretKey) {
-        $this->secretKey = $newSecretKey;
-    }
-
-    public function generateJWTToken($username, $seconds=0) {
-        $header = [
-            "typ" => "JWT",
-            "alg" => "HS256"
-        ];
-        $payload = [
-            "usr" => $username,
-            "iss" => "monshi",
-            "sub" => "auth",
-            "iat" => time()
-        ];
-        if ($seconds > 0) {
-            $payload["exp"] = time() + $seconds;
-        }
-        $encodedHeader = $this->base64UrlEncode(json_encode($header));
-        $encodedPayload = $this->base64UrlEncode(json_encode($payload));
-        $signature = hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, $this->secretKey, true);
-        $encodedSignature = $this->base64UrlEncode($signature);
-        $jwt = $encodedHeader . '.' . $encodedPayload . '.' . $encodedSignature;
-        return $jwt;
-    }
-
-    public function checkJWTToken($jwtToken) {
-        $jwtSeparated = explode(".", $jwtToken);
-        $encodedHeader = $jwtSeparated[0];
-        $encodedPayload = $jwtSeparated[1];
-        $encodedSignature = $jwtSeparated[2];
-        $givenTokenSignature = json_decode($encodedSignature, true);
-        $theExactSignature = hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, $this->secretKey);
-        return $givenTokenSignature == $theExactSignature;
-    }
-
-    private function base64UrlEncode($value) {
-        $base64Encoded = base64_encode($value);
-        $base64UrlEncoded = strtr($base64Encoded, '+/', '-_');
-        $trimmedBase64UrlEncoded = rtrim($base64UrlEncoded, '=');
-        return $trimmedBase64UrlEncoded;
-    }
-
     //The below two functions are duplicated. Should be fixed later.
     public function secretaryLogin($username, $password) {
         $sql = "SELECT username, password FROM secretaries WHERE username = ? AND password = ?";
@@ -77,11 +33,12 @@ class AuthModel extends Model {
             $sql = "INSERT INTO secretaries(username, password, name, family, phone_number) VALUES(?, ?, ?, ?, ?)";
             $query = $this->query($sql, "sssss", $username, $password, $name, $family, $phoneNumber);
             if ($query) {
+                $jwtModel = new JWTModel;
                 $result = [
                     "status" => "success",
                     "message" => "signup was successful",
-                    "access_token" => $this->generateJWTToken($username, 60 * 60), //Add 60 * 60 = 3600 seconds time limit for token
-                    "refresh_token" => $this->generateJWTToken($username),
+                    "access_token" => $jwtModel->generateJWTToken($username, 60 * 60), //Add 60 * 60 = 3600 seconds time limit for token
+                    "refresh_token" => $jwtModel->generateJWTToken($username),
                 ];
             }else{
                 $result = [
@@ -112,11 +69,12 @@ class AuthModel extends Model {
             $sql = "INSERT INTO managers(username, password, name, family, phone_number) VALUES(?, ?, ?, ?, ?)";
             $query = $this->query($sql, "sssss", $username, $password, $name, $family, $phoneNumber);
             if ($query) {
+                $jwtModel = new JwtModel;
                 $result = [
                     "status" => "success",
                     "message" => "signup was successful",
-                    "access_token" => $this->generateJWTToken($username, 60 * 60), //Add 60 * 60 = 3600 seconds time limit for token
-                    "refresh_token" => $this->generateJWTToken($username),
+                    "access_token" => $jwtModel->generateJWTToken($username, 60 * 60), //Add 60 * 60 = 3600 seconds time limit for token
+                    "refresh_token" => $jwtModel->generateJWTToken($username),
                 ];
             }else{
                 $result = [
