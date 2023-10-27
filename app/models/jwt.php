@@ -27,7 +27,7 @@ class JwtModel extends Model {
         }
         $encodedHeader = $this->base64UrlEncode(json_encode($header));
         $encodedPayload = $this->base64UrlEncode(json_encode($payload));
-        $signature = hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, $this->secretKey, true);
+        $signature = hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, $this->secretKey);
         $encodedSignature = $this->base64UrlEncode($signature);
         $jwt = $encodedHeader . '.' . $encodedPayload . '.' . $encodedSignature;
         return $jwt;
@@ -35,12 +35,14 @@ class JwtModel extends Model {
 
     public function checkJWTToken($jwtToken) {
         $jwtSeparated = explode(".", $jwtToken);
+        if (count($jwtSeparated) < 3) return false;
         $encodedHeader = $jwtSeparated[0];
         $encodedPayload = $jwtSeparated[1];
         $encodedSignature = $jwtSeparated[2];
-        $givenTokenSignature = json_decode($encodedSignature, true);
+        $givenTokenSignature = $this->base64UrlDecode($encodedSignature);
         $theExactSignature = hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, $this->secretKey);
-        $payload = json_decode($encodedPayload, true);
+        $payload = $this->base64UrlDecode($encodedPayload);
+        $payload = json_decode($payload, true);
         return $givenTokenSignature == $theExactSignature
             ? $payload["usr"] //username
             : false;
@@ -51,5 +53,11 @@ class JwtModel extends Model {
         $base64UrlEncoded = strtr($base64Encoded, '+/', '-_');
         $trimmedBase64UrlEncoded = rtrim($base64UrlEncoded, '=');
         return $trimmedBase64UrlEncoded;
+    }
+
+    private function base64UrlDecode($encodedValue) {
+        $base64UrlDecoded = strtr($encodedValue, '-_', '+/');
+        $base64Decoded = base64_decode($base64UrlDecoded);
+        return $base64Decoded;
     }
 }
