@@ -1,6 +1,21 @@
 <?php
-class Event extends Model {
-    public function addEvent() {
+class EventModel extends Model {
+    public function addEvent(...$params) {
+        $sql = "INSERT INTO events VALUES(?, ?, ?, ?, ?, ?, ?)";
+        $created_at = time();
+        extract($params, EXTR_SKIP);
+        $query = $this->query(
+            $sql,
+            "ssssssi",
+            $title,
+            $body,
+            $created_at,
+            $started_at,
+            $completed_at,
+            $notif_at,
+            $manager_id
+        );
+        return $query ? true : false;
     }
 
     public function removeEvent($id) {

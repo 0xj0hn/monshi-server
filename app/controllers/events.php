@@ -1,7 +1,37 @@
 <?php
 class Events extends Controller {
     public function add_event() {
-
+        $result = [];
+        $isValidated = Validator::validateElements($_POST, [ //should be completed in the future
+            "title",
+            "body",
+            "started_at",
+            "notif_at",
+            "manager_id"
+        ]);
+        if ($isValidated) {
+            $model = $this->model("event");
+            $isAdded = $model->addEvent($_POST);
+            if ($isAdded) {
+                $result = [
+                    "status" => "success",
+                    "message" => "event has been added"
+                ];
+            }else{
+                $result = [
+                    "code" => 404,
+                    "status" => "error",
+                    "message" => "an error occured"
+                ];
+            }
+        }else{
+            $result = [
+                "code" => 400,
+                "status" => "error",
+                "message" => "validation failed"
+            ];
+        }
+        $this->view("json", $result);
     }
 
     public function remove_event() {
