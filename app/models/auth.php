@@ -1,7 +1,10 @@
 <?php
 class AuthModel extends Model {
+    private $secretSalt = "MoNshI@SecR3tS41t";
     //The below two functions are duplicated. Should be fixed later.
     public function secretaryLogin($username, $password) {
+        $secretSalt = $this->secretSalt;
+        $password = md5($secretSalt . $password . $secretSalt);
         $sql = "SELECT username, password FROM secretaries WHERE username = ? AND password = ?";
         $query = $this->query($sql, "ss", $username, $password);
         $result = $query->get_result();
@@ -9,6 +12,8 @@ class AuthModel extends Model {
     }
 
     public function managerLogin($username, $password) {
+        $secretSalt = $this->secretSalt;
+        $password = md5($secretSalt . $password . $secretSalt);
         $sql = "SELECT username, password FROM managers WHERE username = ? AND password = ?";
         $query = $this->query($sql, "ss", $username, $password);
         $result = $query->get_result();
@@ -26,7 +31,9 @@ class AuthModel extends Model {
         ]);
         if ($isValidated) {
             $username = $data["username"];
-            $password = md5($data["password"]);
+            $secretSalt = $this->secretSalt;
+            $password = $data["password"];
+            $password = md5($secretSalt . $password . $secretSalt);
             $name = $data["name"];
             $family = $data["family"];
             $phoneNumber = $data["phone_number"];
