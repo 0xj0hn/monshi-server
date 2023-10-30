@@ -33,7 +33,8 @@ class AuthModel extends Model {
             $sql = "INSERT INTO secretaries(username, password, name, family, phone_number) VALUES(?, ?, ?, ?, ?)";
             $query = $this->query($sql, "sssss", $username, $password, $name, $family, $phoneNumber);
             if ($query) {
-                $jwtModel = new JWTModel;
+                require_once "app/models/jwt.php";
+                $jwtModel = new JwtModel;
                 $result = [
                     "status" => "success",
                     "message" => "signup was successful",
