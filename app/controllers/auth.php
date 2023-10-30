@@ -25,10 +25,11 @@ class Auth extends Controller {
             $password = $_POST["password"];
             $isLogined = $model->secretaryLogin($username, $password);
             if ($isLogined) {
+                $jwt = $this->model("jwt");
                 $result = [
                     "status" => "success",
-                    "access_token" => $model->generateJWTToken($username, 60 * 60),
-                    "refresh_token" => $model->generateJWTToken($username) //I should implement the refresh token later.
+                    "access_token" => $jwt->generateJWTToken($username, 60 * 60),
+                    "refresh_token" => $jwt->generateJWTToken($username) //I should implement the refresh token later.
                 ];
             }else{
                 $result = [
