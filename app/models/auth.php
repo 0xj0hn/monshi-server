@@ -31,8 +31,8 @@ class AuthModel extends Model {
             $family = $data["family"];
             $phoneNumber = $data["phone_number"];
             $sql = "INSERT INTO secretaries(username, password, name, family, phone_number) VALUES(?, ?, ?, ?, ?)";
-            $query = $this->query($sql, "sssss", $username, $password, $name, $family, $phoneNumber);
-            if ($query) {
+            try{
+                $this->query($sql, "sssss", $username, $password, $name, $family, $phoneNumber);
                 require_once "app/models/jwt.php";
                 $jwtModel = new JwtModel;
                 $result = [
@@ -41,7 +41,7 @@ class AuthModel extends Model {
                     "access_token" => $jwtModel->generateJWTToken($username, 60 * 60), //Add 60 * 60 = 3600 seconds time limit for token
                     "refresh_token" => $jwtModel->generateJWTToken($username),
                 ];
-            }else{
+            }catch(\Exception $_) {
                 $result = [
                     "code" => 401,
                     "status" => "error",
@@ -68,8 +68,8 @@ class AuthModel extends Model {
             $family = $data["family"];
             $phoneNumber = $data["phone_number"];
             $sql = "INSERT INTO managers(username, password, name, family, phone_number) VALUES(?, ?, ?, ?, ?)";
-            $query = $this->query($sql, "sssss", $username, $password, $name, $family, $phoneNumber);
-            if ($query) {
+            try{
+                $this->query($sql, "sssss", $username, $password, $name, $family, $phoneNumber);
                 $jwtModel = new JwtModel;
                 $result = [
                     "status" => "success",
@@ -77,12 +77,13 @@ class AuthModel extends Model {
                     "access_token" => $jwtModel->generateJWTToken($username, 60 * 60), //Add 60 * 60 = 3600 seconds time limit for token
                     "refresh_token" => $jwtModel->generateJWTToken($username),
                 ];
-            }else{
+            }catch(\Exception $e) {
                 $result = [
                     "code" => 401,
                     "status" => "error",
                     "message" => "a problem has occured"
                 ];
+
             }
         }
         return $result;

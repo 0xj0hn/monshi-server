@@ -32,7 +32,7 @@ class Database {
     public function createSecretariesTable() {
         $sql = "CREATE TABLE IF NOT EXISTS `secretaries` (
             id int AUTO_INCREMENT PRIMARY KEY,
-            username varchar(50),
+            username varchar(50) UNIQUE ,
             password varchar(50),
             name varchar(50),
             family varchar(50),
@@ -46,7 +46,7 @@ class Database {
     public function createManagersTable() {
         $sql = "CREATE TABLE IF NOT EXISTS `managers` (
             id int AUTO_INCREMENT PRIMARY KEY,
-            username varchar(50),
+            username varchar(50) UNIQUE,
             password varchar(50),
             name varchar(50),
             family varchar(50),
